@@ -1,0 +1,65 @@
+[
+    {
+        $lookup: {
+            from: "advisor",
+            localField: "ID",
+            foreignField: "s_id",
+            as: "advisor"
+        }
+    },
+    {
+        $unwind: "$advisor"
+    },
+    {
+        $lookup: {
+            from: "instructor",
+            localField: "advisor.i_id",
+            foreignField: "id",
+            as: "instructor"
+        }
+    },
+    {
+        $unwind: "$instructor"
+    },
+    {
+        $lookup: {
+            from: "teaches",
+            localField: "instructor.id",
+            foreignField: "id",
+            as: "teaches"
+        }
+    },
+    {
+        $unwind: "$teaches"
+    },
+    {
+        $lookup: {
+            from: "section",
+            localField: "teaches.course_id",
+            foreignField: "course_id",
+            as: "section"
+        }
+    },
+    {
+        $unwind: "$section"
+    },
+    {
+        $lookup: {
+            from: "course",
+            localField: "section.course_id",
+            foreignField: "course_id",
+            as: "course"
+        }
+    },
+    {
+        $unwind: "$course"
+    },
+    {
+        $project: {
+            
+            student_name: "$name",
+            instructor_name: "$instructor.name",
+            course_title: "$course.title"
+        }
+    }  	
+]
